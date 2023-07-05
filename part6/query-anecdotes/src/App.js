@@ -4,9 +4,8 @@ import Notification from './components/Notification'
 import { getAll } from './request'
 
 const App = () => {
-  const queryClient = new QueryClient()
   const result = useQuery(
-    'notes', getAll
+    'anecdotes', getAll
   )
 
   if (result.isLoading){
@@ -18,6 +17,7 @@ const App = () => {
   const handleVote = (anecdote) => {
     console.log('vote')
   }
+
 
   const anecdotes = result.data
 
