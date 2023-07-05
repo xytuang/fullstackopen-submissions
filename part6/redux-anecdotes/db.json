@@ -39,6 +39,11 @@
       "content": "this is test",
       "votes": 0,
       "id": "tUFcMVF"
+    },
+    {
+      "content": "this is updated reducer",
+      "votes": 0,
+      "id": "6g5pVBf"
     }
   ]
 }
