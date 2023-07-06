@@ -19,7 +19,7 @@ export const notificationChange = (message, secondsToShow) => {
     const timeout = setTimeout(() => {
       dispatch(notificationSlice.actions.notificationChange(initialState))
     }, 1000 * secondsToShow)
-    dispatch(notificationSlice.actions.notificationChange({message, timeout}))
+    dispatch(notificationSlice.actions.notificationChange({ message, timeout }))
   }
 }
 

@@ -1,29 +1,22 @@
 import { useState } from 'react'
+import { useSelector, useDispatch } from 'react-redux'
 import PropTypes from 'prop-types'
+import { deleteBlog, likeBlog } from '../reducers/blogReducer'
 
-const Blog = (props) => {
-  const blog = props.blog
-  //const currentUser = props.currentUser
-  //style={canBeDeleted}
-  //const canBeDeleted = { display:currentUser.username === blog.user.username ? '' : 'none' }
-
+const Blog = ({ blog }) => {
   const [visible, setVisible] = useState(false)
-  const [blogObject, setBlogObject] = useState(blog)
-
+  const dispatch = useDispatch()
   const toggleVisibility = () => {
     setVisible(!visible)
   }
 
-  const increaseLikes = () => {
-    const updatedBlog = {
-      ...blog,
-      likes: blog.likes + 1
-    }
-    props.updateBlog(updatedBlog)
-    setBlogObject(updatedBlog)
+  const removeBlog = () => {
+    dispatch(deleteBlog(blog.id))
   }
 
-  const removeBlog = () => props.deleteBlog(blog)
+  const like = () => {
+    dispatch(likeBlog(blog))
+  }
 
   const showWhenVisible = { display: visible ? '' : 'none' }
   const buttonLabel = visible ? 'hide' : 'view'
@@ -41,7 +34,7 @@ const Blog = (props) => {
       <div>{blog.title} - {blog.author} <button onClick={toggleVisibility}>{buttonLabel}</button></div>
       <div style={showWhenVisible}>
         <p>{blog.url}</p>
-        <p>likes {blogObject.likes} <button id='like-button' onClick={increaseLikes}>like</button></p>
+        <p>likes {blog.likes} <button id='like-button' onClick={like}>like</button></p>
         <button id='delete-button' onClick={removeBlog}>delete</button>
       </div>
     </div>
@@ -49,10 +42,20 @@ const Blog = (props) => {
 }
 
 Blog.propTypes = {
-  blog: PropTypes.object.isRequired,
-  //currentUser: PropTypes.object.isRequired,
-  updateBlog: PropTypes.func.isRequired,
-  deleteBlog: PropTypes.func.isRequired
+  blog: PropTypes.object.isRequired
 }
 
-export default Blog
+const BlogList = () => {
+  const byLikes = (b1,b2) => b2.likes - b1.likes
+  const blogs = useSelector(state => state.blogs)
+
+  return (
+    <div>
+      {blogs.sort(byLikes).map(blog =>
+        <Blog key={blog.id} blog={blog}/>
+      )}
+    </div>
+  )
+}
+
+export default BlogList
