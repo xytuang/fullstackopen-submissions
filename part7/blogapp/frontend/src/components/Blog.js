@@ -37,6 +37,8 @@ export const BlogShow = ({ blogs }) => {
       <div>
         <p>{blog.url}</p>
         <p>likes {blog.likes} <button id='like-button' onClick={like}>like</button></p>
+        <p>comments</p>
+        {blog.comments.map(c => <li key={1}>{ c }</li>)}
         <button id='delete-button' onClick={removeBlog}>delete</button>
       </div>
     </div>
