@@ -7,6 +7,8 @@ import Togglable from './components/Togglable'
 import LoginForm from './components/LoginForm'
 import UserList from './components/UserList'
 import { User } from './components/UserList'
+import { BlogShow } from './components/Blog'
+import BlogList from './components/Blog'
 
 
 import { initializeBlogs } from './reducers/blogReducer'
@@ -18,12 +20,14 @@ import { Routes, Route } from 'react-router-dom'
 
 
 
+
 const App = () => {
 
 
   const dispatch = useDispatch()
   const user = useSelector(state => state.user)
   const users = useSelector(state => state.users)
+  const blogs = useSelector(state => state.blogs)
 
   useEffect(() => {
     dispatch(initializeBlogs())
@@ -49,6 +53,9 @@ const App = () => {
         <BlogForm/>
       </Togglable>
       <Routes>
+        <Route path='/' element={<BlogList blogs={ blogs }/>}/>
+        <Route path='/blogs' element={<BlogList blogs = {blogs}/>}/>
+        <Route path='/blogs/:id' element={<BlogShow blogs = {blogs}/>}/>
         <Route path='/users/:id' element={ <User users={ users } />}/>
         <Route path='/users' element={<UserList users={ users }/>}/>
       </Routes>
@@ -57,27 +64,3 @@ const App = () => {
 }
 
 export default App
-
-// (<></>)
-
-
-// (<div>
-//   <Notification/>
-//   <LoginForm/>
-// </div>)
-// : (
-//   <>
-//     <br></br>
-//     <h3>{user.name}</h3>
-//     <h4>Added blogs</h4>
-//     {!foundUser ? null : (
-//       <Table striped>
-//         <tbody>
-//           {foundUser.blogs.map(blog => <Blog key={blog.id} blog={blog}/>)}
-//         </tbody>
-//       </Table>
-//     )}
-//   </>
-// )
-
-{/* <Route path='/' element={ <BlogList blogs={blogs}/>}/> */}

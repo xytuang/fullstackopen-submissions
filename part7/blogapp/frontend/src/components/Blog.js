@@ -1,14 +1,28 @@
-import { useState } from 'react'
 import { useDispatch } from 'react-redux'
-import PropTypes from 'prop-types'
 import { deleteBlog, likeBlog } from '../reducers/blogReducer'
+import { Link, useParams } from 'react-router-dom'
 
-export const Blog = ({ blog }) => {
-  const [visible, setVisible] = useState(false)
-  const dispatch = useDispatch()
-  const toggleVisibility = () => {
-    setVisible(!visible)
+const Blog = ({ blog }) => {
+  const blogStyle = {
+    paddingTop: 10,
+    paddingLeft: 2,
+    border: 'solid',
+    borderWidth: 1,
+    marginBottom: 5
   }
+  return (
+    <div style={blogStyle}>
+      <Link to={`/blogs/${blog.id}`}>{blog.title} - {blog.author}</Link>
+    </div>
+  )
+}
+
+
+export const BlogShow = ({ blogs }) => {
+  const id = useParams().id
+  const blog = blogs.find(u => u.id === id)
+
+  const dispatch = useDispatch()
 
   const removeBlog = () => {
     dispatch(deleteBlog(blog.id))
@@ -17,22 +31,10 @@ export const Blog = ({ blog }) => {
   const like = () => {
     dispatch(likeBlog(blog))
   }
-
-  const showWhenVisible = { display: visible ? '' : 'none' }
-  const buttonLabel = visible ? 'hide' : 'view'
-
-  const blogStyle = {
-    paddingTop: 10,
-    paddingLeft: 2,
-    border: 'solid',
-    borderWidth: 1,
-    marginBottom: 5
-  }
-
   return (
-    <div style={blogStyle}>
-      <div>{blog.title} - {blog.author} <button onClick={toggleVisibility}>{buttonLabel}</button></div>
-      <div style={showWhenVisible}>
+    <div>
+      <h2>{blog.title} - {blog.author}</h2>
+      <div>
         <p>{blog.url}</p>
         <p>likes {blog.likes} <button id='like-button' onClick={like}>like</button></p>
         <button id='delete-button' onClick={removeBlog}>delete</button>
@@ -41,18 +43,12 @@ export const Blog = ({ blog }) => {
   )
 }
 
-Blog.propTypes = {
-  blog: PropTypes.object.isRequired
-}
-
 const BlogList = ({ blogs }) => {
   const byLikes = (b1,b2) => b2.likes - b1.likes
 
   return (
     <div>
-      {blogs.sort(byLikes).map(blog =>
-        <Blog key={blog.id} blog={blog}/>
-      )}
+      {blogs.sort(byLikes).map(blog => <Blog key={ blog.id } blog={ blog }/>)}
     </div>
   )
 }
