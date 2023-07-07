@@ -1,9 +1,9 @@
 import { useState } from 'react'
-import { useSelector, useDispatch } from 'react-redux'
+import { useDispatch } from 'react-redux'
 import PropTypes from 'prop-types'
 import { deleteBlog, likeBlog } from '../reducers/blogReducer'
 
-const Blog = ({ blog }) => {
+export const Blog = ({ blog }) => {
   const [visible, setVisible] = useState(false)
   const dispatch = useDispatch()
   const toggleVisibility = () => {
@@ -45,9 +45,8 @@ Blog.propTypes = {
   blog: PropTypes.object.isRequired
 }
 
-const BlogList = () => {
+const BlogList = ({ blogs }) => {
   const byLikes = (b1,b2) => b2.likes - b1.likes
-  const blogs = useSelector(state => state.blogs)
 
   return (
     <div>
