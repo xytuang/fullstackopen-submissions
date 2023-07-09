@@ -32,6 +32,18 @@ mongoose.connect(MONGODB_URI)
 
 
 const typeDefs = `
+type Author {
+  name: String!
+  id: String!
+  born: Int
+
+}
+
+input AuthorInput {
+  name: String!
+  born: Int
+}
+
 type Book {
   title: String!
   published: Int!
@@ -40,17 +52,7 @@ type Book {
   id: ID!
 }
 
-  type Author {
-    name: String!
-    id: String!
-    born: Int
-    bookCount: Int
-  }
-
-  input AuthorInput {
-    name: String!
-    born: Int
-  }
+  
 
   type User {
     username: String!
@@ -63,10 +65,10 @@ type Book {
   }
 
   type Query {
-    bookCount: Int!
+
     authorCount: Int!
     allBooks(genre: String): [Book!]!
-    allAuthors: [Author!]
+    allAuthors: [Author!]!
     me: User
   }
 
@@ -74,7 +76,7 @@ type Book {
     addBook(
         title: String!
         published: Int!
-        author: AuthorInput!
+        author: String!
         genres: [String!]!
     ): Book
 
@@ -94,12 +96,8 @@ type Book {
 
 const resolvers = {
 
-  Author: {
-    bookCount: (root) => Book.countDocuments({name: root.name})
-  },
 
   Query: {
-    bookCount: async () => Book.collection.countDocuments(),
     authorCount: () => Author.collection.countDocuments(),
     allBooks: async (root, args) => {
       if (!args.genre){
@@ -127,7 +125,7 @@ const resolvers = {
           })
         }
         const foundBook = await Book.findOne({title: args.title})
-        const foundAuthor = await Author.findOne({name: args.author.name})
+        const foundAuthor = await Author.findOne({name: args.author})
         if (foundBook){
           throw new GraphQLError('book has already been added', {
             extensions: {
@@ -137,21 +135,21 @@ const resolvers = {
           })
         }
         if (!foundAuthor){
-          const author = new Author({...args.author})
+          const author = new Author({name: args.author})
           try{
             await author.save()
           } catch (error) {
             throw new GraphQLError('Saving author failed', {
               extensions: {
                 code: 'BAD_USER_INPUT',
-                invalidArgs: args.author.name,
+                invalidArgs: args.author,
                 error
               }
             })
           }
           
         }
-        const foundAuthor2 = await Author.findOne({name: args.author.name})
+        const foundAuthor2 = await Author.findOne({name: args.author})
         const book = new Book({...args, author: foundAuthor2})
         try{
           await book.save()

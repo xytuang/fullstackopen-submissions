@@ -4,15 +4,14 @@ import { ALL_AUTHORS } from "../queries"
 import BornYearForm from "./BornYearForm"
 
 const Authors = (props) => {
-  const result = useQuery(ALL_AUTHORS, {pollInterval: 2000})
+  const result = useQuery(ALL_AUTHORS)
 
   if (!props.show) {
     return null
   }
-  if (result.loading){
-    return null
+  if (!result.data){
+    return <div>loading</div>
   }
-
 
   return (
     <div>
