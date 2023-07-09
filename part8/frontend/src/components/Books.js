@@ -4,11 +4,12 @@ import { ALL_BOOKS } from '../queries'
 
 const Books = (props) => {
 
-  const result = useQuery(ALL_BOOKS)
+  
   const [books, setBooks] = useState([])
-  const [filteredBooks, setFilteredBooks] = useState([])
+
   const [genres, setGenres] = useState([])
   const [selectedGenre, setSelectedGenre] = useState('')
+  const result = useQuery(ALL_BOOKS, {variables: {genre: (selectedGenre.length > 0) ? ((selectedGenre !== 'All genres') ? selectedGenre : undefined) : undefined}})
 
   useEffect(() => {
     if (result.data) {
@@ -23,19 +24,9 @@ const Books = (props) => {
         })
       })
       setGenres(genres)
-      setSelectedGenre('All genres')
+      setSelectedGenre(selectedGenre)
     }
-  }, [result])
-
-  useEffect(() => {
-    if (selectedGenre === 'All genres'){
-      setFilteredBooks(books)
-    }
-    else{
-      setFilteredBooks(books.filter(b => b.genres.indexOf(selectedGenre) !== -1))
-    }
-   
-  }, [books, selectedGenre])
+  },[result])
 
   if (!props.show) {
     return null
@@ -55,7 +46,7 @@ const Books = (props) => {
             <th>author</th>
             <th>published</th>
           </tr>
-          {filteredBooks.map((b) => (
+          {books.map((b) => (
             <tr key={b.title}>
               <td>{b.title}</td>
               <td>{b.author.name}</td>

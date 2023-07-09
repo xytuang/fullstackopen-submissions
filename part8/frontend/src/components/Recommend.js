@@ -6,9 +6,6 @@ const Recommend = ({show}) => {
     const result = useQuery(ALL_BOOKS)
     const user = useQuery( ME )
 
-    console.log(result)
-    console.log(user)
-
     if (result.loading){
         return null
     }
